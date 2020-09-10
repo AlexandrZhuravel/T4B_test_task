@@ -25,7 +25,7 @@ import static io.qameta.allure.Allure.link;
 import static io.qameta.allure.Allure.step;
 
 @Owner("zhuravel")
-public class T4BTests {
+public class T4BTests extends TestBase {
     private String baseUrl = "https://t4b.com";
     private String chinaUrl = "http://t4b.cn/";
     private String rusUrl = "https://t4b.com/ru/";
