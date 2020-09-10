@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 
 import static com.codeborne.selenide.Selectors.by;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.openqa.selenium.Keys;
 
 
@@ -24,18 +25,22 @@ import static io.qameta.allure.Allure.link;
 import static io.qameta.allure.Allure.step;
 
 @Owner("zhuravel")
-public class T4BTests extends TestBase {
+public class T4BTests {
     private String baseUrl = "https://t4b.com";
-    private String chinaUrl = "http://t4b.cn";
+    private String chinaUrl = "http://t4b.cn/";
     private String rusUrl = "https://t4b.com/ru/";
+
+    private String infoSkype = "tools4brokers.support",
+            infoEmail = "support@t4b.com",
+            infoTelegram = "@t4b_support",
+            infoPhoneUK = "+44-20-8133-8385 UK",
+            infoPhoneHK = "+852-8125-7512 HK";
 
     @BeforeAll
     public static void initLogger() {
         SelenideLogger.addListener("allure", new AllureSelenide()
                 .savePageSource(true)
                 .screenshots(true));
-
-
     }
 
     @AfterEach
@@ -55,18 +60,17 @@ public class T4BTests extends TestBase {
         link("T4B Service", baseUrl);
 
         step("Open service main page", () -> {
-        open(baseUrl);
+            open(baseUrl);
         });
 
         step("Click the 'CN' link", () -> {
-           $x("/html/body/div[2]/header/div/div[1]/ul/li[3]/a").click();
-            closeWindow();
+            $(".header-langs").$("li", 2).click();
+            switchTo().window(1);
         });
 
         step("Сheck the transition to Chinese interface", () -> {
-            $(".main-begin-c").shouldHave(text("10 周年纪念"));
             assertEquals(chinaUrl, getCurrentPageUrl());
-
+            $(".ann-slbl").closest(".content-wrapper").shouldHave(text("10 周年纪念"));
         });
     }
 
@@ -81,14 +85,37 @@ public class T4BTests extends TestBase {
         });
 
         step("Click the 'RU' link", () -> {
-
-            $x("/html/body/div[2]/header/div/div[1]/ul/li[2]/a").click();
-
+            $(".header-langs").$("li", 1).click();
         });
 
         step("Сheck the transition to Russian interface", () -> {
-//            assertEquals(rusUrl, getCurrentPageUrl());
+            assertEquals(rusUrl, getCurrentPageUrl());
             $(".mp-lbl").shouldHave(text("Технологические решения для брокеров"));
+        });
+    }
+
+    @Test
+    @Story("Chat with a manager on the Russian page")
+    @DisplayName("3. Should open a chat window with a manager")
+    void shouldOpenChatWindowWithManager() {
+        link("T4B Service", baseUrl);
+
+        step("Open service main page", () -> {
+            open(baseUrl);
+        });
+
+        step("Click the 'RU' link", () -> {
+            $(".header-langs").$("li", 1).click();
+        });
+        step("Click the 'Контакты' link", () -> {
+            $(".header-menu").$(byText("Контакты")).click();
+        });
+        step("Click the 'Чат с менеджером' link", () -> {
+            $(".apply-row").$(".apply-row-btn").scrollIntoView(true).click();
+        });
+
+        step("Check the 'Чат с менеджером' window", () -> {
+            $("#chat-widget").shouldBe(enabled);
         });
     }
 
@@ -103,12 +130,12 @@ public class T4BTests extends TestBase {
         });
 
         step("Click the 'About Us' link", () -> {
-            $(".header-menu").$("li", 4).click();
+            $(".header-menu").$(byText("About Us")).click();
         });
         step("Click the 'KNOWLEDGE BASE' link", () -> {
             $(".solutions-btn", 1).click();
         });
-            step("Click the 'View more' button in the 'BBI Ideology' section", () -> {
+        step("Click the 'View more' button in the 'BBI Ideology' section", () -> {
             $(".news-cnt", 1).$(".news-more").click();
         });
 
@@ -117,5 +144,25 @@ public class T4BTests extends TestBase {
         });
     }
 
+    @Test
+    @Story("Checking contact information")
+    @DisplayName("5. Сontact information should be true")
+    void contactInformationShouldBeTrue() {
+        link("T4B Service", baseUrl);
 
+        step("Open service main page", () -> {
+            open(baseUrl);
+        });
+
+        step("Click the 'CONTACT US' link", () -> {
+            $(".header-menu").$(byText("Contact Us")).click();
+        });
+
+        step("Сheck contact information in the 'SUPPORT' section", () -> {
+            $(".cnt-row-item-r", 0).shouldHave(text(infoSkype));
+            $(".cnt-row-item-r", 1).shouldHave(text(infoEmail));
+            $(".cnt-row-item-r", 2).shouldHave(text(infoTelegram));
+            $(".cnt-row-item-r", 3).shouldHave(text(infoPhoneUK + " " + infoPhoneHK));
+        });
+    }
 }
