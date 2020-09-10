@@ -19,7 +19,7 @@ class TestBase {
     @Step("Tests setup")
     public static void beforeAll() {
         addListener("AllureSelenide", new AllureSelenide().screenshots(true).savePageSource(true));
-//        Configuration.headless = true;
+        Configuration.headless = true;
     }
 
     @AfterEach
