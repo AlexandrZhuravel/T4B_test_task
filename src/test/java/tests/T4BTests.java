@@ -11,14 +11,13 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static com.codeborne.selenide.Selectors.by;
+import static com.codeborne.selenide.Selectors.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.openqa.selenium.Keys;
 
 
 import static com.codeborne.selenide.Condition.*;
-import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.*;
 import static com.codeborne.selenide.logevents.SelenideLogger.addListener;
 import static io.qameta.allure.Allure.link;
@@ -35,18 +34,6 @@ public class T4BTests extends TestBase {
             infoTelegram = "@t4b_support",
             infoPhoneUK = "+44-20-8133-8385 UK",
             infoPhoneHK = "+852-8125-7512 HK";
-
-    @BeforeAll
-    public static void initLogger() {
-        SelenideLogger.addListener("allure", new AllureSelenide()
-                .savePageSource(true)
-                .screenshots(true));
-    }
-
-    @AfterEach
-    public void closeDriver() {
-        closeWebDriver();
-    }
 
     public static String getCurrentPageUrl() {
         String currentUrl = WebDriverRunner.url();
@@ -136,7 +123,7 @@ public class T4BTests extends TestBase {
             $(".solutions-btn", 1).click();
         });
         step("Click the 'View more' button in the 'BBI Ideology' section", () -> {
-            $(".news-cnt", 1).$(".news-more").click();
+            $(".news-cnt", 2).$(".news-more").click();
         });
 
         step("Сheck the header in the 'BBI Ideology' article", () -> {
